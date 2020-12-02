@@ -16,7 +16,6 @@
 
 package org.springframework.web.servlet.config.annotation;
 
-import com.wjt.config.MyWebMvcConfigurer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +29,7 @@ import org.springframework.validation.Validator;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.HandlerExceptionResolver;
+import wjt.config.MyWebMvcConfigurer;
 
 import java.util.List;
 
