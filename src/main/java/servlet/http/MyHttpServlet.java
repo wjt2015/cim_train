@@ -291,7 +291,7 @@ public abstract class MyHttpServlet extends MyGenericServlet
     protected void doHead(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException
     {
-        javax.servlet.http.NoBodyResponse response = new javax.servlet.http.NoBodyResponse(resp);
+        NoBodyResponse response = new NoBodyResponse(resp);
 
         doGet(req, response);
         response.setContentLength();
@@ -812,7 +812,7 @@ class NoBodyResponse extends HttpServletResponseWrapper {
     private static final ResourceBundle lStrings
             = ResourceBundle.getBundle("javax.servlet.http.LocalStrings");
 
-    private javax.servlet.http.NoBodyOutputStream noBody;
+    private NoBodyOutputStream noBody;
     private PrintWriter writer;
     private boolean didSetContentLength;
     private boolean usingOutputStream;
@@ -820,7 +820,7 @@ class NoBodyResponse extends HttpServletResponseWrapper {
     // file private
     NoBodyResponse(HttpServletResponse r) {
         super(r);
-        noBody = new javax.servlet.http.NoBodyOutputStream();
+        noBody = new NoBodyOutputStream();
     }
 
     // file private
