@@ -196,5 +196,6 @@
     <orderEntry type="library" name="Maven: org.sonatype.plexus:plexus-build-api:0.0.7" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-io:3.1.1" level="project" />
     <orderEntry type="library" name="Maven: dnsjava:dnsjava:3.3.1" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-all:4.1.20.Final" level="project" />
   </component>
 </module>
