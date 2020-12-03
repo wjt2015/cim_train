@@ -267,6 +267,15 @@
             <version>4.1.20.Final</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-maven-plugin -->
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-maven-plugin</artifactId>
+            <version>9.4.22.v20191022</version>
+            <!--       <version>9.2.21.v20170120</version>-->
+        </dependency>
+
+
     </dependencies>
     <build>
         <finalName>cim_train</finalName>
@@ -359,6 +368,26 @@
 
                 </dependencies>
               </plugin>-->
+
+            <!--嵌入式jetty服务器;参考
+            (https://www.eclipse.org/jetty/documentation/9.2.22.v20170531/jetty-maven-plugin.html);
+            (https://www.eclipse.org/jetty/documentation/9.2.22.v20170531/embedding-jetty.html);
+(https://www.eclipse.org/jetty/documentation/9.2.22.v20170531/embedded-examples.html);
+            -->
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <configuration>
+                    <!--<webAppSourceDirectory>src/main/webapp</webAppSourceDirectory>-->
+                    <scanIntervalSeconds>3</scanIntervalSeconds>
+                    <webApp>
+                        <contextPath>/cim_train</contextPath>
+                    </webApp>
+                    <httpConnector>
+                        <port>8081</port>
+                    </httpConnector>
+                </configuration>
+            </plugin>
 
 
         </plugins>
