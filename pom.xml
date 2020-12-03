@@ -24,6 +24,9 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
+        <!--jetty-->
+        <jetty.version>9.2.21.v20170120</jetty.version>
+
     </properties>
 
 
@@ -99,11 +102,11 @@
         </dependency>
 
         <!--es-->
-        <dependency>
-            <groupId>org.elasticsearch</groupId>
-            <artifactId>elasticsearch</artifactId>
-            <version>7.4.1</version>
-        </dependency>
+        <!--        <dependency>
+                    <groupId>org.elasticsearch</groupId>
+                    <artifactId>elasticsearch</artifactId>
+                    <version>7.4.1</version>
+                </dependency>-->
 
         <!--jedis-->
         <dependency>
@@ -271,8 +274,9 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-maven-plugin</artifactId>
-            <version>9.4.22.v20191022</version>
-            <!--       <version>9.2.21.v20170120</version>-->
+            <version>${jetty.version}</version>
+            <!--            <version>9.4.22.v20191022</version>-->
+            <!--<version>9.1.5.v20140505</version>-->
         </dependency>
 
 
@@ -297,6 +301,17 @@
 
 
         <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.6.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>utf-8</encoding>
+                </configuration>
+            </plugin>
 
 
             <!--
@@ -377,12 +392,14 @@
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
+                <version>${jetty.version}</version>
                 <configuration>
                     <!--<webAppSourceDirectory>src/main/webapp</webAppSourceDirectory>-->
                     <scanIntervalSeconds>3</scanIntervalSeconds>
-                    <webApp>
+                    <webAppConfig>
                         <contextPath>/cim_train</contextPath>
-                    </webApp>
+                        <parentLoaderPriority>true</parentLoaderPriority>
+                    </webAppConfig>
                     <httpConnector>
                         <port>8081</port>
                     </httpConnector>
