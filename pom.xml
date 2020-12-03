@@ -388,6 +388,15 @@
             (https://www.eclipse.org/jetty/documentation/9.2.22.v20170531/jetty-maven-plugin.html);
             (https://www.eclipse.org/jetty/documentation/9.2.22.v20170531/embedding-jetty.html);
 (https://www.eclipse.org/jetty/documentation/9.2.22.v20170531/embedded-examples.html);
+(
+jetty插件的运行
+jetty:run
+jetty:run命令会直接使用源代码运行web程序，不将其打包成war文件。jetty插件会保证在运行前所有的类和资源都是最新的。如果你修改了代码，插件会自动重新部署。
+
+jetty:run-war
+run-war会先将程序打包成war文件然后再将其部署。如果有代码修改，会重新打包war文件并部署。
+
+);
             -->
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
