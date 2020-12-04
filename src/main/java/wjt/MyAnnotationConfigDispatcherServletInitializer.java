@@ -9,12 +9,12 @@ import wjt.config.WebConfig;
 public class MyAnnotationConfigDispatcherServletInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class<?>[]{WebConfig.class};
+        return new Class<?>[]{BizConfig.class};
     }
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class<?>[]{BizConfig.class};
+        return new Class<?>[]{WebConfig.class};
     }
 
     @Override
