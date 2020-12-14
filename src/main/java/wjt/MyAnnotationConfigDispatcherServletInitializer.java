@@ -19,6 +19,6 @@ public class MyAnnotationConfigDispatcherServletInitializer extends AbstractAnno
 
     @Override
     protected String[] getServletMappings() {
-        return new String[]{"/"};
+        return new String[]{"/*.json","/*/*.json"};
     }
 }
