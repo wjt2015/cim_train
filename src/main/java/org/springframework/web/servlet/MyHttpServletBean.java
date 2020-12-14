@@ -16,6 +16,7 @@
 
 package org.springframework.web.servlet;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
@@ -78,11 +79,13 @@ import java.util.Set;
  * @see #doGet
  * @see #doPost
  */
+@Slf4j
 @SuppressWarnings("serial")
 public abstract class MyHttpServletBean extends MyHttpServlet implements EnvironmentCapable, EnvironmentAware {
 
     /** Logger available to subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
+
 
     /**
      * Set of required properties (Strings) that must be supplied as
