@@ -13,10 +13,11 @@ public class HomeController {
     @RequestMapping(value = {"/home.json"})
     @ResponseBody
     public ApiResult home(){
-
         ApiResult apiResult = new ApiResult(0, "success", "test");
 
         return apiResult;
     }
+
+    //@RequestMapping(value = {"/"})
 
 }
