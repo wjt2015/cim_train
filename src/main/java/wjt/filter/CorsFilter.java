@@ -12,6 +12,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ 跨域详解 been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource
+ (https://www.cnblogs.com/cxygg/p/12419502.html);
+ */
 @Slf4j
 @Order(value = 1)
 //@WebFilter(urlPatterns = {"/*"})

@@ -37,12 +37,15 @@ public class MyAnnotationConfigDispatcherServletInitializer extends AbstractAnno
 
     @Override
     protected FilterRegistration.Dynamic registerServletFilter(ServletContext servletContext, Filter filter) {
+
+/*
         FilterRegistration.Dynamic filterRegistration = servletContext.addFilter("corsFilter", filter);
-
         EnumSet<DispatcherType> dispatcherTypes = EnumSet.allOf(DispatcherType.class);
-
         filterRegistration.addMappingForUrlPatterns(dispatcherTypes, false, "/*");
+*/
 
+        FilterRegistration.Dynamic filterRegistration = super.registerServletFilter(servletContext, filter);
+        filterRegistration.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, "/*");
         log.info("filter={};registration!", filter);
         return filterRegistration;
     }
