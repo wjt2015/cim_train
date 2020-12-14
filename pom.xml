@@ -410,7 +410,7 @@ run-war会先将程序打包成war文件然后再将其部署。如果有代码�
                         <parentLoaderPriority>true</parentLoaderPriority>
                     </webAppConfig>
                     <httpConnector>
-                        <port>8082</port>
+                        <port>8085</port>
                     </httpConnector>
                 </configuration>
             </plugin>
