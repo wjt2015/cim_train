@@ -406,7 +406,8 @@ run-war会先将程序打包成war文件然后再将其部署。如果有代码�
                     <!--<webAppSourceDirectory>src/main/webapp</webAppSourceDirectory>-->
                     <scanIntervalSeconds>3</scanIntervalSeconds>
                     <webAppConfig>
-                        <contextPath>/cim_train</contextPath>
+                        //<contextPath>/cim_train</contextPath>
+                        <contextPath>/</contextPath>
                         <parentLoaderPriority>true</parentLoaderPriority>
                     </webAppConfig>
                     <httpConnector>
