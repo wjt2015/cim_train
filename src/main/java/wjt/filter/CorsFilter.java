@@ -16,7 +16,12 @@ import java.io.IOException;
  跨域详解 been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource
  (https://www.cnblogs.com/cxygg/p/12419502.html);
 
-
+ cors,
+ (https://juejin.cn/post/6844903873400799240);
+(https://juejin.cn/post/6844903568852385806);
+ (https://juejin.cn/post/6844903838621630477);
+ (https://juejin.cn/post/6887744164079878151);
+ (https://juejin.cn/search?query=cors&type=all);
  */
 @Slf4j
 @Order(value = 1)
