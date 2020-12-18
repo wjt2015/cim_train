@@ -12,5 +12,11 @@ http://localhost:8081/cim_train/srs_players/rtc_player.html
 http://localhost:8081/cim_train/srs_players/rtc_publisher.html
 
 }
+{
+20201217,
+基于netty构建弹幕系统:
+https://v.qq.com/x/page/o0861bf7bjs.html
+}
+
 
 
