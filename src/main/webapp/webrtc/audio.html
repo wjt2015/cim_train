@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>audio wave</title>
+</head>
+<body>
+
+
+<div>
+    <h2>audio wave</h2>
+</div>
+
+<canvas id="myCanvas"></canvas>
+
+
+<script>
+    var myCanvas=document.querySelector("#myCanvas")
+    navigator.mediaDevices.getUserMedia({audio:true}).then(function (mediaStream) {
+        //调用video;
+        var vudio=new Vudio(mediaStream,myCanvas,{
+            accuracy:256,
+            width:1024,
+            height:200,
+            waveform:{
+                fadeSide:false,
+                maxHeight:200,
+                verticalAlign:'middle',
+                horizontalAlign:'center',
+                color:'#2980b9'
+            }
+        })
+
+        console.log("vudio="+vudio)
+
+    }).catch(function (err) {
+        console.error(err)
+    })
+
+
+
+
+</script>
+</body>
+</html>

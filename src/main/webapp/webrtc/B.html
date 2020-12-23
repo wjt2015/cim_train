@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>webrtc</title>
+</head>
+<body>
+
+
+
+
+<script>
+
+
+    console.log("webdriver="+navigator.webdriver)
+    console.log("appName="+navigator.appName)
+    console.log("cookieEnabled="+navigator.cookieEnabled)
+    console.log("platform="+navigator.platform)
+
+    console.log("systemLanguage=%s;userAgent=%s;userLanguage=%s;",navigator.systemLanguage,navigator.userAgent,navigator.userLanguage)
+
+    console.log("host=%s;href=%s;protocol=%s;search=%s;",location.host,location.href,location.protocol,location.search)
+
+    var myVideo=document.querySelector('#myVideo')
+
+
+
+    var myConstraints={audio:true,video:true}
+    navigator.mediaDevices.getUserMedia(myConstraints).then(function (mediaStream) {
+        /*use media stream*/
+
+        console.log("test_webrtc!!type="+mediaStream.prototype)
+
+        console.log(Object.prototype.toString.call(mediaStream))
+
+        console.log(mediaStream.getVideoTracks())
+
+/*        myVideo.src=window.URL.createObjectURL(mediaStream)
+        myVideo.play()*/
+
+
+    }).catch(function (err) {
+        /*handle the error;*/
+        console.error(err)
+    })
+
+/*    var video=document.querySelector('#myVideo')
+    var myConstraints2={
+        video:{
+            facingMode:'user' //优先调用前置摄像头;
+        }
+    }*/
+
+
+
+
+</script>
+<div>
+<h2>test_webrtc</h2>
+</div>
+<video id="myVideo"></video>
+</body>
+</html>

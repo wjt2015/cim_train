@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>本地video</title>
+</head>
+<body>
+
+<div>
+    <h2>本地播放器</h2>
+</div>
+
+<div>
+    <video id="myVideo">
+        <source id="mp4_src" src="/Users/jintao9/Downloads/java_concurrency/Mybatis源码分析与技术原理.mp4" type="video/mp4">
+    </video>
+</div>
+
+
+<script>
+    var myVideo = document.getElementById("myVideo");
+    console.log("myVideo="+myVideo)
+    function play() {
+        console.log("播放")
+        myVideo.play();
+    }
+
+    function pause() {
+        console.log("停止")
+        myVideo.pause();
+    }
+
+</script>
+
+
+
+<div>
+    <p>播放控制</p>
+    <button onclick="play()">播放</button>
+    <button onclick="pause()">停止</button>
+</div>
+
+</body>
+</html>
+
+

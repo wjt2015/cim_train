@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>菜鸟教程(runoob.com)</title>
+</head>
+<body>
+
+<video id="myVideo">
+    <source id="mp4_src" src="/Users/jintao9/Downloads/java_concurrency/Mybatis源码分析与技术原理.mp4" type="video/mp4">
+    <!--<source id="ogg_src"  src="mov_bbb.ogg" type="video/ogg">-->
+    您的浏览器不支持 video 标签。
+</video>
+<p>点击按钮播放或暂停视频。</p>
+<button onclick="playVid()" type="button">播放视频</button>
+<button onclick="pauseVid()" type="button">暂停视频</button>
+<script>
+    var x = document.getElementById("myVideo");
+    console.log("x="+x)
+    function playVid(){
+        console.log("播放!")
+        x.play();
+    }
+    function pauseVid(){
+        console.log("停止")
+        x.pause();
+    }
+</script>
+<p>视频由<a href="//www.bigbuckbunny.org/" target="_blank">Big Buck Bunny</a>提供。</p>
+
+</body>
+</html>

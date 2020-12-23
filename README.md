@@ -18,5 +18,13 @@ http://localhost:8081/cim_train/srs_players/rtc_publisher.html
 https://v.qq.com/x/page/o0861bf7bjs.html
 }
 
+{
+如何使用野狗搭建视频聊天室-WebRTC的技术实践
+https://segmentfault.com/a/1190000004969015?utm_source=sf-related
+
+}
+
+
+
 
 
