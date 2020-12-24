@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!--
+参考:
+(https://webrtc.github.io/samples/
+
+Basic getUserMedia demo
+);
+
+-->
+<head>
+    <meta charset="UTF-8">
+    <title>gum video</title>
+</head>
+<body>
+<div>
+    <p>getUserMedia</p>
+</div>
+
+
+<div>
+    <video id="gumLocal" autoplay playsinline></video>
+    <button id="showVideo">open camera</button>
+    <textarea id="desc"></textarea>
+</div>
+
+
+<script>
+
+    var desc = document.getElementById("desc");
+
+    console.log("desc=" + desc);
+
+    myConstraints = window.constraints = {audio: false,
+        video: true,frameRate:300,
+    width:1900,height:1850};
+
+    function handleSuccess(mediaStream) {
+        desc.innerText = "handleSuccess!mediaStream=" + mediaStream;
+        var myVideo = document.getElementById("gumLocal");
+        var myVideoTracks = mediaStream.getVideoTracks;
+        window.stream = mediaStream;
+        myVideo.srcObject = mediaStream;
+        console.log("myVideo=" + myVideo + ";myVideoTracks=" + myVideoTracks + ";mediaStream=" + mediaStream);
+    }
+
+    function handleError(error) {
+        desc.innerText = "handleError" + error;
+        console.log("handleError" + error)
+    }
+
+    async function init(e) {
+        try {
+            var mediaStream = await navigator.mediaDevices.getUserMedia(myConstraints);
+            handleSuccess(mediaStream);
+            e.target.disabled = true;
+
+        } catch (e) {
+            handleError(e);
+        }
+        desc.innerText = "init media stream";
+        console.log("init media stream!");
+    }
+
+
+    document.querySelector("#showVideo").addEventListener("click", function (e) {
+        init(e)
+    });
+
+
+</script>
+
+</body>
+</html>

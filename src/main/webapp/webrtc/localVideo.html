@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <title>本地video</title>
 </head>
+<!--
+
+参考:
+(https://www.runoob.com/jsref/met-video-play.html);
+(https://www.w3school.com.cn/jsref/dom_obj_video.asp);
+(https://www.w3school.com.cn/js/js_arrays.asp);
+-->
 <body>
 
 <div>
@@ -15,11 +22,32 @@
         <source id="mp4_src" src="/Users/jintao9/Downloads/java_concurrency/Mybatis源码分析与技术原理.mp4" type="video/mp4">
     </video>
 </div>
+<div>
+    <p>播放控制</p>
+    <button onclick="play()">播放</button>
+    <button onclick="pause()">停止</button>
+    <button onclick="show()">展示参数</button>
+    <button onclick="next()">下一个</button>
+</div>
 
 
 <script>
+
+    var videos = ["/Users/jintao9/Downloads/java_concurrency/深入理解Java虚拟机/深入理解Java虚拟机（JVM性能调优+内存模型+虚拟机原理） (P74. 75字节码指令简介).mp4",
+        "/Users/jintao9/Downloads/java_concurrency/深入理解Java虚拟机/深入理解Java虚拟机（JVM性能调优+内存模型+虚拟机原理） (P80. 81操作树栈指令).mp4",
+        "/Users/jintao9/Downloads/java_concurrency/深入理解Java虚拟机/深入理解Java虚拟机（JVM性能调优+内存模型+虚拟机原理） (P49. 49虚拟机工具介绍).mp4"];
+
+    var vi=0;
+
     var myVideo = document.getElementById("myVideo");
-    console.log("myVideo="+myVideo)
+
+    myVideo.width = 550;
+    myVideo.height = 520;
+    myVideo.controls = true;
+
+
+    console.log("myVideo=" + myVideo)
+
     function play() {
         console.log("播放")
         myVideo.play();
@@ -30,15 +58,22 @@
         myVideo.pause();
     }
 
+    function show() {
+        console.log("audioTracks=%s;autoplay=%s;buffered=%s;controls=%s;duration=%ds;networkState=%s;volume=%s;w=%d;h=%d;",
+            myVideo.audioTracks, myVideo.autoplay, myVideo.buffered, myVideo.controls, myVideo.duration, myVideo.networkState, myVideo.volume, myVideo.width, myVideo.height)
+    }
+
+    function next() {
+        vi+=1;
+        vi=(vi%videos.length);
+        console.log("vi=%d;",vi)
+        myVideo.src=videos[vi];
+
+    }
+
 </script>
 
 
-
-<div>
-    <p>播放控制</p>
-    <button onclick="play()">播放</button>
-    <button onclick="pause()">停止</button>
-</div>
 
 </body>
 </html>
