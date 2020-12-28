@@ -10,6 +10,7 @@
 [INFO] --------------------------------[ war ]---------------------------------
 [INFO] 
 [INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ cim_train ---
+[INFO] Deleting /Users/jintao9/linux2014/wjt_projs/cim_train/target
 [INFO] 
 [INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ cim_train ---
 [INFO] com.wjt:cim_train:war:1.0-SNAPSHOT
@@ -180,6 +181,6 @@
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  2.385 s
-[INFO] Finished at: 2020-12-28T19:56:39+08:00
+[INFO] Total time:  1.840 s
+[INFO] Finished at: 2020-12-28T23:16:39+08:00
 [INFO] ------------------------------------------------------------------------

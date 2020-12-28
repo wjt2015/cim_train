@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  * (https://docs.spring.io/spring-framework/docs/4.3.8.RELEASE/spring-framework-reference/htmlsingle/#websocket-server);
  */
 @Slf4j
-@ServerEndpoint(value = "/chat")
+//@ServerEndpoint(value = "/chat")
 public class ChatServer {
     public ChatServer() {
         log.info("ChatServer!this={};", this);
