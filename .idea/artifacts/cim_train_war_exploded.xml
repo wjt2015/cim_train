@@ -52,6 +52,8 @@
           <element id="library" level="project" name="Maven: org.springframework:spring-tx:4.3.8.RELEASE" />
           <element id="library" level="project" name="Maven: org.aspectj:aspectjweaver:1.8.13" />
           <element id="library" level="project" name="Maven: org.springframework:spring-aspects:4.3.8.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-websocket:4.3.8.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-messaging:4.3.8.RELEASE" />
           <element id="library" level="project" name="Maven: cglib:cglib:3.2.5" />
           <element id="library" level="project" name="Maven: org.ow2.asm:asm:5.2" />
           <element id="library" level="project" name="Maven: org.apache.ant:ant:1.9.6" />
