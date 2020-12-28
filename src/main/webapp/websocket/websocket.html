@@ -34,9 +34,14 @@
 </div>
 
 <script>
+    var userName='Tom';
 
     //    实例化websocket
     var webSocket = new WebSocket("ws://localhost:8085/chat");
+
+    webSocket.onmessage=function(event){
+      console.log("recv msg!data=",event.data);
+    };
 
 
     <!--实例化编辑器-->
@@ -49,6 +54,13 @@
     function submit() {
         console.log(window.um.getContentTxt());
         webSocket.send(window.um.getContentTxt());
+
+        webSocket.send(JSON.stringify({
+           userName:userName,
+           content:window.um.getContent()
+        }));
+
+        window.um.setContent('');
     }
 
     function clear() {

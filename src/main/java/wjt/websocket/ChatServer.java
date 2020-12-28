@@ -15,12 +15,19 @@ import java.util.stream.Collectors;
  * 参考:
  * 使用Java和WebSocket实现网页聊天室实例代码,
  * (https://www.jb51.net/article/87659.htm);
- * <p>
  * java 实现websocket的两种方式实例详解,
  * (https://www.jb51.net/article/144601.htm);
+ * (https://www.liaoxuefeng.com/wiki/1252599548343744/1282384966189089);
+ *
+ * websocket api,
+ * (https://developer.mozilla.org/en-US/docs/Web/API/WebSocket);
+ *
+ * websocket探究,
+ * (https://www.zhihu.com/question/20215561);
+ * (https://www.cnblogs.com/jingmoxukong/p/7755643.html);
  */
 @Slf4j
-@ServerEndpoint(value = "/chat")
+//@ServerEndpoint(value = "/chat")
 public class ChatServer {
     public ChatServer() {
         log.info("ChatServer!this={};", this);

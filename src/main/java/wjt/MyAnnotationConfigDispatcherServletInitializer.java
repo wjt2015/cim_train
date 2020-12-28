@@ -5,12 +5,12 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 import wjt.config.BizConfig;
 import wjt.config.WebConfig;
 import wjt.filter.CorsFilter;
+import wjt.websocket.MyWebSocketConfigurer;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletRegistration;
 import java.util.EnumSet;
 
 @Slf4j
@@ -22,7 +22,7 @@ public class MyAnnotationConfigDispatcherServletInitializer extends AbstractAnno
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class<?>[]{WebConfig.class};
+        return new Class<?>[]{WebConfig.class, MyWebSocketConfigurer.class};
     }
 
     @Override
