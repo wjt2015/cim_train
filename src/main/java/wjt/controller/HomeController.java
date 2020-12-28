@@ -1,6 +1,7 @@
 package wjt.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,5 +27,10 @@ public class HomeController {
 
         return new ApiResult(0, "success", "succ");
     }
+
+/*    @MessageMapping
+    public ApiResult websocket(){
+        return new ApiResult(0,"success","succ");
+    }*/
 
 }

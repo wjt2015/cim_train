@@ -19,15 +19,24 @@ import java.util.stream.Collectors;
  * (https://www.jb51.net/article/144601.htm);
  * (https://www.liaoxuefeng.com/wiki/1252599548343744/1282384966189089);
  *
+ * websocket讨论,
+ * (https://www.zhihu.com/org/a-li-ba-ba-tao-xi-ji-zhu);
+ * (https://www.zhihu.com/question/20215561);
+ * (https://zhuanlan.zhihu.com/p/27552845);
+ *(https://zhuanlan.zhihu.com/p/288336552);
+ *
  * websocket api,
  * (https://developer.mozilla.org/en-US/docs/Web/API/WebSocket);
  *
  * websocket探究,
  * (https://www.zhihu.com/question/20215561);
  * (https://www.cnblogs.com/jingmoxukong/p/7755643.html);
+ *
+ * spring-websocket,
+ * (https://docs.spring.io/spring-framework/docs/4.3.8.RELEASE/spring-framework-reference/htmlsingle/#websocket-server);
  */
 @Slf4j
-//@ServerEndpoint(value = "/chat")
+@ServerEndpoint(value = "/chat")
 public class ChatServer {
     public ChatServer() {
         log.info("ChatServer!this={};", this);

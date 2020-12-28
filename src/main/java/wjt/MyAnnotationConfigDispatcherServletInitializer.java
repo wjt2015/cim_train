@@ -22,7 +22,7 @@ public class MyAnnotationConfigDispatcherServletInitializer extends AbstractAnno
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class<?>[]{WebConfig.class, MyWebSocketConfigurer.class};
+        return new Class<?>[]{WebConfig.class};
     }
 
     @Override

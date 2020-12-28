@@ -307,6 +307,18 @@
                 </dependency>
         -->
 
+        <!--jetty嵌入式开发(https://www.cnblogs.com/yiwangzhibujian/p/5845623.html);
+        -->
+        <!-- https://mvnrepository.com/artifact/org.eclipse.jetty.aggregate/jetty-all -->
+        <dependency>
+            <groupId>org.eclipse.jetty.aggregate</groupId>
+            <artifactId>jetty-all</artifactId>
+            <version>9.4.10.v20180503</version>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+
+
 
         <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-maven-plugin -->
         <dependency>
@@ -445,7 +457,6 @@ run-war会先将程序打包成war文件然后再将其部署。如果有代码�
                     <scanIntervalSeconds>3</scanIntervalSeconds>
                     <webAppConfig>
                         <contextPath>/cim_train</contextPath>
-                        <contextPath>/</contextPath>
                         <parentLoaderPriority>true</parentLoaderPriority>
                     </webAppConfig>
                     <httpConnector>
