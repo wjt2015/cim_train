@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>multiChat</title>
+</head>
+<body>
+
+<div>
+    <p>模拟本地浏览器</p>
+    <video id="myVideo" playsingle autoplay muted></video>
+    <p>模拟远程播放器</p>
+    <video id="otherVideo" playsingle autoplay></video>
+</div>
+
+<div>
+    <button onclick="startMyVideo()">启动</button>
+    <button onclick="startOtherVideo()">启动</button>
+    <button onclick="stop()">停止</button>
+</div>
+
+
+<script>
+    const myVideo=document.getElementById("myVideo");
+    var mediaStream;
+
+    async function startMyVideo() {
+        mediaStream=await navigator.mediaDevices.getUserMedia({audio:true,video:true});
+        myVideo.srcObject=mediaStream;
+        console.log("myVideo start!mediaStream="+mediaStream);
+        var audioTracks = mediaStream.getAudioTracks();
+        var videoTracks = mediaStream.getVideoTracks();
+        console.log("audioTracks="+audioTracks+";videoTracks="+videoTracks);
+        audioTracks.forEach(function (audioTrack) {
+            console.log("audioTrack="+audioTrack);
+        });
+        videoTracks.forEach(function (videoTrack) {
+            console.log("videoTrack="+videoTrack);
+        });
+
+
+    }
+</script>
+</body>
+</html>

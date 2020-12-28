@@ -59,6 +59,15 @@
         return ((pc === pc1) ? pc2 : pc1);
     }
 
+    function displayAttrs(o){
+        console.log("displayAttrs_start!o="+o);
+        for(var v in o){
+            console.log(v+"=>"+o[v]);
+        }
+        console.log("displayAttrs_finish!");
+
+    }
+
     //
     async function start() {
         console.log("Requesting local stream!");
@@ -70,6 +79,7 @@
             localVideo.srcObject = stream;
             localStream = stream;
             callButton.disabled = false;
+            displayAttrs(stream);
         } catch (e) {
             alert("getUserMedia() error!e=" + e);
         }
@@ -78,6 +88,7 @@
     async function onIceCandidate(pc, event) {
         try {
             await (getOtherPc(pc).addIceCandidate(event.candidate));
+            displayAttrs(event.candidate);
             console.log("onIceCandidate success!pc=" + pc + ";event=" + event);
         } catch (e) {
             console.log("onIceCandidate error!pc=" + pc + ";event=" + event+";e="+e);
@@ -145,6 +156,9 @@
         console.log("pc2 createAnswer start:");
         try {
             const answer=await pc2.createAnswer();
+
+            displayAttrs(answer);
+
             await onCreateAnswerSuccess(answer);
         }catch (e) {
             console.log("fail to create answer!pc2="+pc2+";e="+e);
@@ -202,6 +216,9 @@
         try {
             console.log("pc1 createOffer start:");
             const offer=await pc1.createOffer(offerOptions);
+
+            displayAttrs(offer);
+
             await onCreateOfferSuccess(offer);
         }catch (e) {
             console.log("fail to create sdp!e="+e);
