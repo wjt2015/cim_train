@@ -38,7 +38,7 @@
 
     //    实例化websocket
     //var webSocket = new WebSocket("ws://localhost:8085/cim_train/chat");
-    var webSocket = new WebSocket("ws://localhost:8085/cim_train/chat");
+    var webSocket = new WebSocket("ws://localhost:8085/cim_train/chat.ws");
 
     webSocket.onmessage=function(event){
       console.log("recv msg!data=",event.data);
