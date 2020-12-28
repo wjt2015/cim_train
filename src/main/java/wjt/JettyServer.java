@@ -9,7 +9,7 @@ import org.eclipse.jetty.server.Server;
 @Slf4j
 public class JettyServer {
 
-    public static void main(String[] args) throws Exception {
+/*    public static void main(String[] args) throws Exception {
         int port=8081;
         Server server = new Server(port);
         server.start();
@@ -19,5 +19,6 @@ public class JettyServer {
 
         log.info("jettyServer running on port={};",port);
         server.join();
-    }
+    }*/
+
 }
