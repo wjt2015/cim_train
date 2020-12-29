@@ -35,7 +35,7 @@ public class MyWebSocketConfigurer implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         WebSocketHandlerRegistration webSocketHandlerRegistration = registry.addHandler(new ChatMsgHandler(ID_MAP_SESSION), "/chat.ws")
-                .setHandshakeHandler(handshakeHandler);
+                .setHandshakeHandler(handshakeHandler).setAllowedOrigins("*");
         log.info("webSocketHandlerRegistration={};", webSocketHandlerRegistration);
     }
 
