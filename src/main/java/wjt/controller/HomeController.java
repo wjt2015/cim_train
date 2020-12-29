@@ -28,9 +28,9 @@ public class HomeController {
         return new ApiResult(0, "success", "succ");
     }
 
-/*    @MessageMapping
+    @MessageMapping(value = {"/chat.ws"})
     public ApiResult websocket(){
-        return new ApiResult(0,"success","succ");
-    }*/
+        return new ApiResult(0,"success","ws");
+    }
 
 }

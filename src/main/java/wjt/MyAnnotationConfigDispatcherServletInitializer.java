@@ -23,12 +23,12 @@ public class MyAnnotationConfigDispatcherServletInitializer extends AbstractAnno
     @Override
     protected Class<?>[] getServletConfigClasses() {
         log.info("getServletConfigClasses finish!");
-        return new Class<?>[]{WebConfig.class};
+        return new Class<?>[]{WebConfig.class, MyWebSocketConfigurer.class};
     }
 
     @Override
     protected String[] getServletMappings() {
-        return new String[]{"*.json","*.ws"};
+        return new String[]{"*.json", "*.ws"};
     }
 
     @Override
