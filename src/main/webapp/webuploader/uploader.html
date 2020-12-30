@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+参考,
+(https://github.com/fex-team/webuploader);
+(http://fex.baidu.com/webuploader/getting-started.html);
+(https://docs.spring.io/spring-framework/docs/4.3.8.RELEASE/spring-framework-reference/htmlsingle/#mvc-multipart);
+-->
+<head>
+    <meta charset="UTF-8">
+    <title>文件上传测试</title>
+    <!--引入CSS-->
+    <link rel="stylesheet" type="text/css" href="../libs/webuploader/css/webuploader.css">
+
+    <!--引入JS-->
+    <script type="text/javascript" src="../libs/webuploader/src/webuploader.js"></script>
+
+    <!--SWF在初始化的时候指定，在后面将展示-->
+
+</head>
+<body>
+<div id="uploader" class="wu-example">
+
+    <!--文件信息-->
+    <div id="thelist" class="uploader-list">
+    </div>
+
+    <div class="btns">
+        <div id="picker">选择文件</div>
+        <button id="ctlBtn" class="btn btn-default">开始上传</button>
+    </div>
+
+</div>
+
+<script>
+    var BASE_URL = '../libs/webuploader';
+
+    var uploader = WebUploader.create({
+        //swf文件路径;
+        swf: BASE_URL + '/dist/Uploader.swf',
+        //文件接收服务器;
+        server: 'http://localhost:8085/cim_train/upload.json',
+        //    选择文件的按钮,可选;
+        pick:'#picker',
+    //    不压缩image;
+        resize:false
+    });
+    //当有文件被加入队列时;
+    uploader.on('fileQueued',function (file) {
+        $list.append('<div id="' + file.id + '" class="item">' +
+            '<h4 class="info">' + file.name + '</h4>' +
+            '<p class="state">等待上传...</p>' +
+            '</div>');
+
+        console.log("文件已加入队列!file=",file);
+    });
+    // 文件上传过程中创建进度条实时显示。
+    uploader.on( 'uploadProgress', function( file, percentage ) {
+        var $li = $( '#'+file.id ),
+            $percent = $li.find('.progress .progress-bar');
+
+        // 避免重复创建
+        if ( !$percent.length ) {
+            $percent = $('<div class="progress progress-striped active">' +
+                '<div class="progress-bar" role="progressbar" style="width: 0%">' +
+                '</div>' +
+                '</div>').appendTo( $li ).find('.progress-bar');
+        }
+
+        $li.find('p.state').text('上传中');
+
+        $percent.css( 'width', percentage * 100 + '%' );
+    });
+    //文件上传失败会派送uploadError事件，成功则派送uploadSuccess事件。不管成功或者失败，在文件上传完后都会触发uploadComplete事件。
+    uploader.on( 'uploadSuccess', function( file ) {
+        $( '#'+file.id ).find('p.state').text('已上传');
+    });
+
+    uploader.on( 'uploadError', function( file ) {
+        $( '#'+file.id ).find('p.state').text('上传出错');
+    });
+
+    uploader.on( 'uploadComplete', function( file ) {
+        $( '#'+file.id ).find('.progress').fadeOut();
+    });
+
+
+
+
+</script>
+
+</body>
+</html>
