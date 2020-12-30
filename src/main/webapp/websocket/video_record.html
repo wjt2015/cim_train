@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+websocket直播,参考:
+(https://blog.csdn.net/qq_39364032/article/details/79744309);
+
+录像;
+
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <title>websocket video record</title>
+</head>
+<body>
+
+<div>
+    <p>录像</p>
+</div>
+
+<div>
+    <video id="video_record" style="width: 1600px;height: 900px"></video>
+
+    <canvas id="output" style="display: none"></canvas>
+
+</div>
+
+<div>
+    <button id="startBtn" type="button" onclick="startRecord()">开始录制</button>
+</div>
+
+
+<script>
+    var stream;
+
+    var webSocket = new WebSocket("ws://localhost:8085/cim_train/video.ws");
+
+    var back = document.getElementById("output");
+    //    用于在canvas画图的环境;
+    var backCtx = back.getContext("2d");
+
+    var videoRecord = document.getElementById("video_record");
+
+
+    async function startRecord() {
+        //录制视频;
+        stream = await navigator.mediaDevices.getUserMedia({audio: true, video: true});
+        videoRecord.srcObject = stream;
+
+        drawAndSend();
+    }
+
+    //绘制视频并发送;将视频帧绘制到Canvas对象上,Canvas每100ms切换帧，形成肉眼视频效果;
+    function drawAndSend() {
+        //绘制;
+        backCtx.drawImage(videoRecord, 0, 0, back.width, back.height);
+        //Canvas的内容转化成PNG data URI并发送到服务器，0.5为和压缩系数
+        webSocket.send(back.toDataURL("image/jpeg", 0.5));
+
+        setTimeout(drawAndSend, 100);
+    }
+
+</script>
+
+</body>
+</html>

@@ -28,6 +28,13 @@ webscocket,
 https://github.com/TooTallNate/Java-WebSocket.git
 
 (https://cloud.tencent.com/developer/information/websocket%E8%A7%86%E9%A2%91%E4%BC%A0%E8%BE%93);
+https://cloud.tencent.com/developer/article/1748664?from=information.detail.websocket%E8%A7%86%E9%A2%91%E4%BC%A0%E8%BE%93
+https://cloud.tencent.com/developer/article/1075384?from=information.detail.websocket%E8%A7%86%E9%A2%91%E4%BC%A0%E8%BE%93
+https://cloud.tencent.com/developer/article/1340918?from=information.detail.websocket%E8%A7%86%E9%A2%91%E4%BC%A0%E8%BE%93
+
+
+https://juejin.cn/post/6844903977457287181
+https://juejin.cn/post/6854573210152009735
 
 }
 {
@@ -49,7 +56,9 @@ ueditor,umeditor;
 
 }
 
+{
 
+}
 
 
 

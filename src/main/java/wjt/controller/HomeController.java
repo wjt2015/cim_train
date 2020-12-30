@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,7 +36,17 @@ public class HomeController {
     }
 
 
-    @RequestMapping(value = "/upload.json")
+    /**
+     * [
+     * curl -F file=@abc.png http://localhost:8085/cim_train/upload.json
+     * <p>
+     * ]
+     *
+     * @param multipartFile
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = {"/upload.json"})
     public ApiResult upload(@RequestParam("file") MultipartFile multipartFile) throws IOException {
         String fileName = multipartFile.getName();
         String originalFilename = multipartFile.getOriginalFilename();
@@ -44,8 +55,25 @@ public class HomeController {
         log.info("fileName={};originalFilename={};contentType={};size={};", fileName, originalFilename, contentType, size);
 
         multipartFile.transferTo(new File(FILE_SAVE_DIR + originalFilename));
+        return new ApiResult(0, "success", originalFilename);
+    }
 
-        return new ApiResult(0, "success", fileName);
+    /**
+     * [
+     * curl -F file2=@从零开始搭建IM.pdf http://localhost:8085/cim_train/upload2.json
+     *
+     * ]
+     * @param multipartFile
+     * @return
+     */
+    @RequestMapping(value = {"/upload2.json"})
+    public ApiResult upload2(@RequestPart("file2") MultipartFile multipartFile) {
+        String name = multipartFile.getName();
+        String originalFilename = multipartFile.getOriginalFilename();
+        String contentType = multipartFile.getContentType();
+        long size = multipartFile.getSize();
+        log.info("name={};originalFilename={};contentType={};size={};", name, originalFilename, contentType, size);
+        return new ApiResult(0, "success", originalFilename);
     }
 
 

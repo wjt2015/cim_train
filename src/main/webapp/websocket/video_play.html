@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+直播播放;
+
+-->
+<head>
+    <meta charset="UTF-8">
+    <title>websocket video play</title>
+</head>
+<body>
+
+<div>
+    <p>播放视频</p>
+    <img id="video_play" style="width: 1600px;height: 900px"/>
+</div>
+
+<script>
+    var webSocket = new WebSocket("ws://localhost:8085/cim_train/video.ws");
+    var img=document.getElementById("video_play");
+//    监听消息;
+    webSocket.onmessage=function (ev) {
+        console.log("recv ev!ev=",ev);
+
+        img.src=ev.data;
+    }
+
+</script>
+
+</body>
+</html>
