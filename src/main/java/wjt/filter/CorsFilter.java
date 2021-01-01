@@ -2,6 +2,7 @@ package wjt.filter;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -23,9 +24,14 @@ import java.io.IOException;
  (https://juejin.cn/post/6844903838621630477);
  (https://juejin.cn/post/6887744164079878151);
  (https://juejin.cn/search?query=cors&type=all);
+
+
+ //---
+ DelegatingFilterProxy;
  */
 @Slf4j
 @Order(value = 1)
+@Service
 //@WebFilter(urlPatterns = {"/*"})
 public class CorsFilter implements Filter {
     @Override

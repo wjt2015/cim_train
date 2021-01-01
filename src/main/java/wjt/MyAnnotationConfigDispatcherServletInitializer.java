@@ -1,6 +1,8 @@
 package wjt;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 import wjt.config.BizConfig;
 import wjt.config.WebConfig;
@@ -33,7 +35,9 @@ public class MyAnnotationConfigDispatcherServletInitializer extends AbstractAnno
 
     @Override
     protected Filter[] getServletFilters() {
-        return new Filter[]{new CorsFilter()};
+        DelegatingFilterProxy corsFilter = new DelegatingFilterProxy("corsFilter");
+        corsFilter.setContextAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
+        return new Filter[]{corsFilter};
     }
 
     @Override

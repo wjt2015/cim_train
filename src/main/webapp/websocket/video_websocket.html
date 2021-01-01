@@ -23,10 +23,10 @@
 <hr/>
 <div>
     <h3>视频A</h3>
-    <video id="v1" width="600" height="400" autoplay></video>
+    <video id="v1" width="600" height="400" muted="muted" autoplay></video>
     <br/>
     <h3>视频B</h3>
-    <video id="v2" width="600" height="400" autoplay></video>
+    <video id="v2" width="600" height="400" muted="muted" autoplay></video>
     <br/>
 
     <a id="createChatRoom" href="/websocket/#true" onclick="createChatRoom()">点击此链接打开新的聊天室</a>
@@ -38,7 +38,7 @@
 </div>
 <script>
     // stun和turn服务器
-    var iceServer = {
+    var iceServerConfig = {
         "iceServers": [{
             "url": "stun:stun.l.google.com:19302"
         }, {
@@ -50,8 +50,8 @@
     var mediaStream, webSocket, v1, v2, tips, createChatRoom, localStream, remoteStream;
     var msg = document.getElementById("msg");
     //    PeerConnection;
-    var pc = new RTCPeerConnection(iceServer);
-    console.log("pc=",pc);
+    var pc = new RTCPeerConnection(iceServerConfig);
+    console.log("pc=", pc);
 
     v1 = document.getElementById("v1");
     v2 = document.getElementById("v2");
@@ -66,11 +66,20 @@
     //webSocket start;
     webSocket = new WebSocket("ws://localhost:8085/cim_train/video.ws");
 
+    function keepAlive() {
+        webSocket.send(JSON.stringify({
+            "event": "_keepalive"
+        }));
+        setTimeout(keepAlive,20000);
+
+    };
+
     webSocket.onerror = function (ev) {
         msg.innerText = "webSocket error!ev=" + ev;
     };
     webSocket.onopen = function (ev) {
         msg.innerText = "webSocket ok!ev=" + ev;
+        keepAlive();
     };
 
     webSocket.onmessage = function (ev) {
@@ -92,8 +101,7 @@
                 pc.setRemoteDescription(new RTCSessionDescription(json.data.sdp));
 
                 if (json.event === "_offer") {
-                    pc.createAnswer({offerToReceiveVideo: true, offerToReceiveAudio: true},
-                        sendAnswer,
+                    pc.createAnswer(sendAnswer,
                         function (error) {
                             console.log("sendAnswer error!error=", error);
                         });
@@ -120,6 +128,11 @@
         }
     };
 
+    pc.onaddstream = function (ev) {
+        console.log("onaddstream!ev=", ev);
+        v2.srcObject = ev.stream;
+    };
+
 
     function closeWebSocket() {
         webSocket.close();
@@ -130,21 +143,15 @@
     }
 
 
-
-    pc.onaddstream = function (ev) {
-        console.log("onaddstream!ev=", ev);
-        v2.srcObject = ev.stream;
-    };
-
     var sendOffer = function (desc) {
-        pc.setLocalDescription(desc);
+        var ret = pc.setLocalDescription(desc);
         webSocket.send(JSON.stringify({
             "event": "_offer",
             "data": {
                 "sdp": desc
             }
         }));
-        console.log("sendOffer;isCaller=", isCaller);
+        console.log("sendOffer;isCaller=%s;ret=%s;", isCaller, ret);
     };
 
     var sendAnswer = function (desc) {
@@ -167,8 +174,6 @@
                 console.log("sendOffer error!error=", error);
             });
         }
-
-
     }, function (error) {
         console.log("getUserMedia error!error=", error);
     });

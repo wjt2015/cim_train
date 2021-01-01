@@ -7,11 +7,11 @@
 <body>
 <div>
     <input type="text" id="input"/><br/>
-    <button type="button" onclick="sendMsg()" >发送消息</button>
+    <button type="button" onclick="sendMsg()">发送消息</button>
 
     <hr/>
 
-    <button type="button" onclick="closeWebSocket()" >关闭websocket链接</button>
+    <button type="button" onclick="closeWebSocket()">关闭websocket链接</button>
 
     <hr/>
 </div>
@@ -23,85 +23,116 @@
 <hr/>
 <div>
     <h3>视频A</h3>
-    <video id="v1" width="600" height="400" autoplay></video>
+    <video id="v1" width="600" height="400" muted="muted" autoplay></video>
     <br/>
     <h3>视频B</h3>
-    <video id="v2" width="600" height="400" autoplay></video>
+    <video id="v2" width="600" height="400" muted="muted" autoplay></video>
     <br/>
 
     <a id="createChatRoom" href="/websocket/#true" onclick="createChatRoom()">点击此链接打开新的聊天室</a>
     <br/>
 
-    <p id="tips" style="background-color:red">请在其他浏览器中打开：http://此电脑   加入此视频聊天</p>
+    <p id="tips" style="background-color:red">请在其他浏览器中打开：http://此电脑 加入此视频聊天</p>
     <br/>
 
 </div>
 <script>
-    var mediaStream,webSocket,v1,v2,tips,createChatRoom;
-    var msg=document.getElementById("msg");
-    v1=document.getElementById("v1");
-    v2=document.getElementById("v2");
-    tips=document.getElementById("tips");
-    createChatRoom=document.getElementById("createChatRoom");
-
-    var isCaller=window.location.href.split("#")[1];
-    isCaller=false;
-
-    console.log("window.location.href=%s;isCaller=%s;",window.location.href,isCaller);
-
-    webSocket=new WebSocket("ws://localhost:8085/cim_train/video.ws");
-
-    webSocket.onerror=function (ev) {
-        msg.innerText="webSocket error!ev="+ev;
+    // stun和turn服务器
+    var iceServerConfig = {
+        "iceServers": [{
+            "url": "stun:stun.l.google.com:19302"
+        }, {
+            "url": "turn:numb.viagenie.ca",
+            "username": "webrtc@live.com",
+            "credential": "muazkh"
+        }]
     };
-    webSocket.onopen=function (ev) {
-        msg.innerText="webSocket ok!ev="+ev;
+    var mediaStream, webSocket, v1, v2, tips, createChatRoom, localStream, remoteStream;
+    var msg = document.getElementById("msg");
+    //    PeerConnection;
+    var pc = new RTCPeerConnection(iceServerConfig);
+    console.log("pc=", pc);
+
+    v1 = document.getElementById("v1");
+    v2 = document.getElementById("v2");
+    tips = document.getElementById("tips");
+    createChatRoom = document.getElementById("createChatRoom");
+
+    var isCaller = window.location.href.split("#")[1];
+    isCaller = false;
+
+    console.log("window.location.href=%s;isCaller=%s;", window.location.href, isCaller);
+
+    //webSocket start;
+    webSocket = new WebSocket("ws://localhost:8085/cim_train/video.ws");
+
+    function keepAlive() {
+        webSocket.send(JSON.stringify({
+            "event": "_keepalive"
+        }));
+        setTimeout(keepAlive,20000);
+
     };
 
-//    PeerConnection;
-    var pc=new RTCPeerConnection();
-    //发送自己的ice到其他客户端;
-    pc.onicecandidate=function (ev) {
-        console.log("onicecandidate;ev=",ev);
-        if(ev.candidate!==null){
-            webSocket.send(JSON.stringify({
-                "event":"_ice_candidate",
-                "data":{"candidate":ev.candidate}
-            }));
-        }
+    webSocket.onerror = function (ev) {
+        msg.innerText = "webSocket error!ev=" + ev;
+    };
+    webSocket.onopen = function (ev) {
+        msg.innerText = "webSocket ok!ev=" + ev;
+        keepAlive();
     };
 
-    webSocket.onmessage=function (ev) {
-        msg.innerText="recv msg;ev="+ev;
-        console.log("recv!ev=",ev);
+    webSocket.onmessage = function (ev) {
+        msg.innerText = "recv msg;ev=" + ev;
+        console.log("recv!ev=", ev);
 
-        if(ev.data=="_new_user"){
+        if (ev.data == "_new_user") {
             console.log("new user enter!");
             window.location.reload();
-        }else {
-            var json=JSON.parse(ev.data);
-            console.log("recv json!json=",json);
+        } else {
+            var json = JSON.parse(ev.data);
+            console.log("recv json!json=", json);
 
-            if(json.event=='_ice_candidate'){
+            if (json.event == '_ice_candidate') {
                 //收到icecandidate;
                 pc.addIceCandidate(new RTCIceCandidate(json.data.candidate));
-            }else {
+            } else {
                 //收到sdp;
                 pc.setRemoteDescription(new RTCSessionDescription(json.data.sdp));
 
-                if(json.event==="_offer"){
-                    pc.createAnswer(sendAnswer,function(error){
-                        console.log("sendAnswer error!error=",error);
-                    });
+                if (json.event === "_offer") {
+                    pc.createAnswer(sendAnswer,
+                        function (error) {
+                            console.log("sendAnswer error!error=", error);
+                        });
                 }
             }
 
         }
     };
 
-    webSocket.onclose=function (ev) {
-        msg.innerText="webSocket链接关闭!";
+    webSocket.onclose = function (ev) {
+        msg.innerText = "webSocket链接关闭!";
     };
+    //webSocket end;
+
+    //发送自己的ice到其他客户端;
+    pc.onicecandidate = function (ev) {
+        console.log("onicecandidate;ev=", ev);
+        if (ev.candidate !== null) {
+            // pc.addIceCandidate(ev.candidate);
+            webSocket.send(JSON.stringify({
+                "event": "_ice_candidate",
+                "data": {"candidate": ev.candidate}
+            }));
+        }
+    };
+
+    pc.onaddstream = function (ev) {
+        console.log("onaddstream!ev=", ev);
+        v2.srcObject = ev.stream;
+    };
+
 
     function closeWebSocket() {
         webSocket.close();
@@ -110,60 +141,47 @@
     function sendMsg() {
         webSocket.send(msg.value);
     }
-    // stun和turn服务器
-    var iceServer = {
-        "iceServers" : [ {
-            "url" : "stun:stun.l.google.com:19302"
-        }, {
-            "url" : "turn:numb.viagenie.ca",
-            "username" : "webrtc@live.com",
-            "credential" : "muazkh"
-        } ]
-    };
 
-    pc.onaddstream=function (ev) {
-      console.log("onaddstream!ev=",ev);
-      v2.srcObject=ev.stream;
-    };
 
-    var sendOffer=function(desc){
-        pc.setLocalDescription(desc);
+    var sendOffer = function (desc) {
+        var ret = pc.setLocalDescription(desc);
         webSocket.send(JSON.stringify({
-            "event":"_offer",
-            "data":{
-                "sdp":desc
+            "event": "_offer",
+            "data": {
+                "sdp": desc
             }
         }));
+        console.log("sendOffer;isCaller=%s;ret=%s;", isCaller, ret);
     };
 
-    var sendAnswer=function (desc) {
+    var sendAnswer = function (desc) {
         pc.setLocalDescription(desc);
         webSocket.send(JSON.stringify({
-            "event":"_answer",
-            "data":{
-                "sdp":desc
+            "event": "_answer",
+            "data": {
+                "sdp": desc
             }
         }));
+        console.log("sendAnswer;isCaller=", isCaller);
     };
 
-    window.navigator.getUserMedia({audio:false,video:true},function (stream) {
-        v1.srcObject=stream;
+    window.navigator.getUserMedia({audio: false, video: true}, function (stream) {
+        v1.srcObject = stream;
         pc.addStream(stream);
 
-        if(isCaller){
-            pc.createOffer(sendOffer,function(error){
-                console.log("seendOffer error!error=",error);
+        if (isCaller) {
+            pc.createOffer(sendOffer, function (error) {
+                console.log("sendOffer error!error=", error);
             });
         }
-
-    },function (error) {
-        console.log("getUserMedia error!error=",error);
+    }, function (error) {
+        console.log("getUserMedia error!error=", error);
     });
 
-    window.onload=function(){
-        if(isCaller==null||isCaller==undefined){
+/*    window.onload = function () {
+        if (isCaller == null || isCaller == undefined) {
             tips.remove();
-        }else {
+        } else {
             createChatRoom.remove();
         }
     };
@@ -171,6 +189,41 @@
     function init() {
         window.location.reload();
         console.log("window reload!");
+    }*/
+
+    function start() {
+        pc.addstream(localStream);
+        if (isCaller) {
+            pc.createOffer(function (sessionDescription) {
+                pc.setLocalDescription(sessionDescription);
+                send(sessionDescription);
+                // 根据不同的Signaling方式实现
+            });
+            if (receiveAnswer) {
+                pc.setRemoteDescription(answer.sessionDescription);
+            }
+        } else {
+            if (receiveOffer) {
+                pc.setRemoteDescription(offer.sessionDescription);
+            }
+            pc.createAnswer(function (sessionDescription) {
+                pc.setLocalDescription(sessionDescription);
+                send(sessionDescription);
+            });
+        }
+    }
+
+    /**
+     * 取得目标直播主的sdp和icecandidate;
+     * 发给对方answer;
+     * ;
+     */
+    function getRemoteSdp() {
+
+    }
+
+    function startRecvStream(){
+
     }
 
 </script>

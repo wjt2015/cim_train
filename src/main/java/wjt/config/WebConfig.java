@@ -9,7 +9,9 @@ import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.MyDelegatingWebMvcConfiguration;
 import wjt.controller.HomeController;
+import wjt.filter.CorsFilter;
 
+import javax.servlet.Filter;
 import java.nio.charset.StandardCharsets;
 
 @Slf4j
@@ -31,6 +33,5 @@ public class WebConfig {
         log.info("multipartResolver={};charsetName={};", multipartResolver, charsetName);
         return multipartResolver;
     }
-
 
 }
