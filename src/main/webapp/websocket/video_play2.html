@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>播放音视频</title>
+</head>
+<body>
+<div>
+    <p>播放音视频</p>
+    <video id="vid1" width="450" height="400" autoplay playsinline></video>
+    <hr/>
+    <button type="button" onclick="startPlay()">开始播放</button>
+    <hr/>
+
+</div>
+
+<script>
+    // stun和turn服务器
+    var iceServerConfig = {
+        "iceServers": [{
+            "url": "stun:stun.l.google.com:19302"
+        }, {
+            "url": "turn:numb.viagenie.ca",
+            "username": "webrtc@live.com",
+            "credential": "muazkh"
+        }]
+    };
+
+    var pc=null;
+    var vid1=document.getElementById("vid1");
+    var webSocket = new WebSocket("ws://localhost:8085/cim_train/video.ws");
+    var otherId=null;
+
+    webSocket.onmessage=function (ev) {
+        var json=JSON.parse(ev.data);
+        if(json.type=="_candidate"){
+            pc.addIceCandidate(json.data);
+        }else if(json.type=="_offer"){
+            pc.setRemoteDescription(json.data);
+
+            pc.createAnswer().then(function (answer) {
+                pc.setLocalDescription(answer);
+            });
+
+        }else if(json.type=="_v_list"){
+            otherId=json.data[0];
+
+            console.log("otherId=",otherId);
+
+            webSocket.send(JSON.stringify({
+                "type":"_get_offer",
+                "data":otherId
+            }));
+
+            webSocket.send(JSON.stringify({
+                "type":"_get_candidate",
+                "data":otherId
+            }));
+        }
+    };
+
+    function startPlay(){
+        pc=new RTCPeerConnection(iceServerConfig);
+
+        pc.ontrack=function (ev) {
+            vid1.srcObject=ev.streams[0];
+        };
+        pc.onicecandidate=function (ev) {
+            webSocket.send(JSON.stringify({
+                "type":"_candidate",
+                "data":ev.candidate
+            }));
+        };
+
+        webSocket.send(JSON.stringify({
+            "type":"_get_v"
+        }));
+
+
+    }
+
+</script>
+
+</body>
+</html>

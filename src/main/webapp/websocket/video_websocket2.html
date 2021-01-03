@@ -165,7 +165,7 @@
         console.log("sendAnswer;isCaller=", isCaller);
     };
 
-    window.navigator.getUserMedia({audio: false, video: true}, function (stream) {
+/*    window.navigator.getUserMedia({audio: false, video: true}, function (stream) {
         v1.srcObject = stream;
         pc.addStream(stream);
 
@@ -176,7 +176,7 @@
         }
     }, function (error) {
         console.log("getUserMedia error!error=", error);
-    });
+    });*/
 
 /*    window.onload = function () {
         if (isCaller == null || isCaller == undefined) {
@@ -216,13 +216,18 @@
     /**
      * 取得目标直播主的sdp和icecandidate;
      * 发给对方answer;
-     * ;
+     * 接收流的回调函数;
      */
     function getRemoteSdp() {
 
     }
 
     function startRecvStream(){
+        //请求对方的sdp和icecandidate;
+        webSocket.send(JSON.stringify({
+            "event":"_request_sdp_icecandidate"
+        }));
+
 
     }
 

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主播</title>
+</head>
+<!--
+参考:
+https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Connectivity
+-->
+<body>
+<div>
+    <p>音视频采集</p>
+    <video id="vid1" autoplay playsinline width="500" height="400"></video>
+    <hr/>
+    <button type="button" id="start" onclick="startPublish()">开始采集音视频</button>
+    <hr/>
+</div>
+
+<script>
+
+    // stun和turn服务器
+    var iceServerConfig = {
+        "iceServers": [{
+            "url": "stun:stun.l.google.com:19302"
+        }, {
+            "url": "turn:numb.viagenie.ca",
+            "username": "webrtc@live.com",
+            "credential": "muazkh"
+        }]
+    };
+    var vid1=document.getElementById("vid1");
+    var mediaStream = null, pc;
+    //webSocket start;
+    var webSocket = new WebSocket("ws://localhost:8085/cim_train/video.ws");
+
+    webSocket.onmessage=function (ev) {
+        var json = JSON.parse(ev.data);
+        if(json.type=="_answer"){
+            pc.setRemoteDescription(json.data);
+        }else if(json.type=="_candidate"){
+            pc.addIceCandidate(json.candidate);
+        }
+    };
+
+    async function startPublish() {
+        mediaStream = await
+        navigator.mediaDevices.getUserMedia({audio: false, video: true});
+
+        vid1.srcObject=mediaStream;
+
+        pc = new RTCPeerConnection(iceServerConfig);
+
+        pc.onicecandidate=function (ev) {
+            webSocket.send(JSON.stringify({
+                "type":"_candidate",
+                "data":ev.candidate
+            }));
+        };
+
+        for (const track of mediaStream.getTracks()) {
+            pc.addTrack(track);
+        }
+
+        pc.createOffer({offerToReceiveAudio: true, offerToReceiveVideo: true})
+            .then(function (offer) {
+                pc.setLocalDescription(offer);
+                webSocket.send(JSON.stringify({
+                    "type": "_offer",
+                    "data": offer
+                }));
+            });
+
+        console.log("startPublish finish!");
+
+    }
+</script>
+
+</body>
+</html>

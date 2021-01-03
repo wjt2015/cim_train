@@ -33,6 +33,9 @@ import java.util.concurrent.atomic.AtomicLong;
 @Slf4j
 
 public class VideoHandler implements WebSocketHandler {
+    private static final String JSON_TYPE = "type";
+    private static final String OFFER_TYPE = "_offer";
+    private static final String CANDIDATE_TYPE = "_candidate";
 
     private Map<String, WebSocketSession> uidMapSession;
 
@@ -45,6 +48,7 @@ public class VideoHandler implements WebSocketHandler {
     private Map<String, WebSocketMessage<?>> uidMapCandidate = new ConcurrentHashMap<>();
 
     private final AtomicLong id = new AtomicLong();
+
 
     public VideoHandler(Map<String, WebSocketSession> uidMapSession) {
         this.uidMapSession = uidMapSession;
@@ -65,7 +69,7 @@ public class VideoHandler implements WebSocketHandler {
 
     }
 
-    @Override
+/*    @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
 
         log.info("id={};message={};", id.getAndIncrement(), message);
@@ -88,10 +92,12 @@ public class VideoHandler implements WebSocketHandler {
         }
 
 
-        /**
-         * 转发;
-         */
-/*
+        */
+
+    /**
+     * 转发;
+     *//*
+     *//*
         uidMapSession.forEach((uid,webSocketSession)->{
             if(webSocketSession.isOpen()&&!webSocketSession.equals(session)){
                 try {
@@ -101,10 +107,42 @@ public class VideoHandler implements WebSocketHandler {
                 }
             }
         });
-*/
+*//*
+
+
+    }*/
+    @Override
+    public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
+        if (message instanceof TextMessage) {
+            handleTextMessage(session, (TextMessage) (message));
+        }
 
 
     }
+
+    private void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
+        String payload = textMessage.getPayload();
+        log.info("sessionId={};payload={};", session.getId(), payload);
+        JSONObject jsonObject = JSONObject.parseObject(payload);
+        String type = jsonObject.getString(JSON_TYPE);
+        if(type.equals("_send_offer")){
+
+        }
+    }
+
+/*    private void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
+        String payload = textMessage.getPayload();
+        log.info("sessionId={};payload={};", session.getId(), payload);
+        JSONObject jsonObject = JSONObject.parseObject(payload);
+        String type = jsonObject.getString(JSON_TYPE);
+        if (OFFER_TYPE.equals(type)) {
+            uidMapOfferJson.put(session.getId(), jsonObject.getJSONObject("data"));
+            log.info("uidMapOfferJson={};",uidMapOfferJson);
+        } else if (CANDIDATE_TYPE.equals(type)) {
+            uidMapCandidateJson.put(session.getId(), jsonObject.getJSONObject("data"));
+            log.info("uidMapCandidateJson={};",uidMapCandidateJson);
+        }
+    }*/
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {

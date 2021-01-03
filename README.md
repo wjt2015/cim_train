@@ -58,7 +58,18 @@ ueditor,umeditor;
 
 {
 
+webrtc交互实例:    
+https://www.cnblogs.com/cther/p/myPeerConnection.html
+}    
+{    
+webrtc流程:    
+https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Connectivity
+实例:
+video_publish.html
+video_play2.html
+
 }
+
 
 
 
