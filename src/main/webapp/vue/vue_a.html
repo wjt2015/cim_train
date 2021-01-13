@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>vue练习</title>
+</head>
+<body>
+
+<div id="app">
+    {{ msg }}
+    <hr/>
+    <div>
+        school:{{ school.name }} {{school}}
+        <hr/>
+        campus:{{ campus }}
+        <hr/>
+        campus[2]:{{ campus[2] }}
+    </div>
+    <input type="button" value="event_bind_a" v-on:click="doIt">
+    <!--
+    v-on:dblclick
+    v-on:mouseenter
+    @dblclick
+    -->
+    <hr/>
+    <div>
+        <button type="button" v-on:click="incr">+</button>
+        <span>{{ num }}</span>
+        <button type="button" v-on:click="decr">-</button>
+        <hr/>
+        <button type="button" v-show="num>5" class="active">显示、隐藏测试</button>
+    </div>
+    <hr/>
+    <div>
+        <h3>图片切换展示</h3>
+        <img :src="imgSrcArr[imgIndex]">
+        <!-- <img v-bind:src="imgSrc">-->
+        <a href="#" @click="prev" v-show="imgIndex > 0">上一张</a>
+        <a href="#" @click="next" v-show="imgIndex < (imgSrcArr.length-1)">下一张</a>
+    </div>
+    <hr/>
+    <div>
+        <h3>v-for实例:音乐列表</h3>
+        <ul>
+            <li v-for="(item,index) in musicList">{{ index }} -- {{ item }}</li>
+        </ul>
+
+        <table border="1">
+            <tr>
+                <th>编号</th><th>音乐</th>
+            </tr>
+
+            <tr v-for="(item,index) in musicList">
+                <td>{{ index }}</td><td @click="musicDetail($event)">{{ item }}</td>
+            </tr>
+        </table>
+        <hr/>
+        <button type="button" @click="addMusic">添加</button>
+        <hr/>
+        <input type="text" v-model="input_msg">
+        <br/>
+        输入框最新值:<p>{{ input_msg }}</p>
+        <button type="button" @click="updateMsg">修改输入框内容</button>
+        <hr/>
+        <textarea rows="20" cols="60" v-model="text_msg"></textarea>
+        <br/>
+        <p>{{text_msg}}</p>
+        <hr/>
+
+        <!--二维码-->
+        <img src="http://qrcode.leipi.org.cn/js.html?qw=150&qc=&ql=undefined&lw=NaN&lh=NaN&bor=undefined&op=img" >
+
+    </div>
+    <hr/>
+    <hr/>
+</div>
+
+<script src="../libs/vue.js"></script>
+<script>
+    var app = new Vue({
+        el: "#app",
+        data: {
+            msg: "hello vue!",
+            school: {
+                name: "黑马程序员",
+                mobile: "4000--618-9090"
+            },
+            campus: ["北京校区", "深圳校区", "武汉校区", "广州校区"],
+            num: 0,
+            imgIndex: 0,
+            imgSrcArr: ["../res/pic/1.jpg", "../res/pic/2.jpg", "../res/pic/3.jpg", "../res/pic/4.jpg", "../res/pic/5.jpg"],
+            prevShow: true,
+            nextShow: true,
+            musicList:["铁血丹心","千古绝唱","滚滚长江东逝水","红枣树"],
+            input_msg:"",
+            text_msg:"",
+
+        },
+        methods: {
+            doIt: function () {
+                console.log("doIt()!");
+                this.campus[2] = "哈佛大学";
+                this.msg = "hello js+vue+axios!!";
+            },
+            incr: function () {
+                this.num++;
+            },
+            decr: function () {
+                this.num--;
+            },
+            prev: function () {
+                if (this.imgIndex > 0) {
+                    this.imgIndex--;
+                }
+            },
+            next: function () {
+                if(this.imgIndex<(this.imgSrcArr.length-1)){
+                    this.imgIndex++;
+                }
+                // this.imgIndex = (this.imgIndex + 1) % this.imgSrcArr.length;
+            },
+            addMusic:function () {
+                this.musicList.push("思故乡");
+            },
+            //v-on传参数;
+            musicDetail:function (event) {
+                console.log("musicDetail!event=",event,event.target.innerText);
+            },
+            updateMsg:function () {
+                this.input_msg=this.input_msg+";updated!";
+                console.log("input_msg=",this.input_msg);
+            }
+        }
+    });
+</script>
+
+
+</body>
+</html>

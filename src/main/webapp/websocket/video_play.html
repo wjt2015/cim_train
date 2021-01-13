@@ -7,23 +7,178 @@
 <head>
     <meta charset="UTF-8">
     <title>websocket video play</title>
+
 </head>
 <body>
 
 <div>
     <p>播放视频</p>
     <img id="video_play" style="width: 1600px;height: 900px"/>
+
+    <button type="button" onclick="init()">开始</button>
 </div>
 
-<script>
-    var webSocket = new WebSocket("ws://localhost:8085/cim_train/video.ws");
-    var img=document.getElementById("video_play");
-//    监听消息;
-    webSocket.onmessage=function (ev) {
-        console.log("recv ev!ev=",ev);
+<hr/>
+<div>
+    <h2>在线用户列表</h2>
+    <div id="user_table">
+        <table border="1">
+            <tr>
+                <th>用户uid</th>
+            </tr>
+            <ol>
+                <li v-for="user in userList">
+                    <td><a href=""> <p> {{ user }} </p> </a></td>
+                </li>
+            </ol>
 
-        img.src=ev.data;
+        </table>
+    </div>
+</div>
+<hr/>
+
+
+<script src="../libs/vue.js"></script>
+<script>
+
+    // stun和turn服务器
+    var iceServerConfig = {
+        "iceServers": [{
+            "url": "stun:stun.l.google.com:19302"
+        }, {
+            "url": "turn:numb.viagenie.ca",
+            "username": "webrtc@live.com",
+            "credential": "muazkh"
+        }]
+    };
+
+    var pc, mediaStream, webSocket,user_table_vue;
+    webSocket = new WebSocket("ws://localhost:8085/cim_train/video.ws");
+    var video_play = document.getElementById("video_play");
+    //    监听消息;
+    webSocket.onmessage = function (ev) {
+        console.log("recv ev!ev=", ev);
+        var json = JSON.parse(ev.data);
+        console.log("recv json=", json);
+
+        if (json.type == "offer") {
+            recvOtherOffer(json.data);
+        } else if (json.type == "answer") {
+            recvOtherAnswer(json.data);
+        } else if (json.type == "candidate") {
+            recvOtherCandidate(json.data);
+        } else if (json.type == "users") {
+            recvUsers(json.data);
+        }
     }
+
+
+    //init
+    async function init() {
+        pc = new RTCPeerConnection(iceServerConfig);
+
+        await
+        navigator.getUserMedia({audio: false, video: true}, function (stream) {
+
+            mediaStream = stream;
+            console.log("recv media stream!mediaStream=", mediaStream);
+
+            console.log("tracks=",mediaStream.getTracks());
+
+            //addTrack
+            for (var track in mediaStream.getTracks()) {
+                pc.addTrack(track);
+            }
+
+        }, function (error) {
+            console.log("recv mediaStream error!error=", error);
+        });
+
+
+        //ontrack
+        pc.ontrack = function (ev) {
+            video_play.srcObject = streams[0];
+            console.log("ev=", ev);
+        };
+
+        //createOffer
+        pc.createOffer({offerToReceiveAudio: true, offerToReceiveVideo: true})
+            .then(function (offer) {
+                //setLocalDescription;
+                pc.setLocalDescription(offer);
+                var jsonStr = JSON.stringify({
+                    "type": "send_offer",
+                    "data": offer
+                });
+                //transmit offer;
+                webSocket.send(jsonStr);
+                console.log("将offer发送给信令服务器!");
+            });
+
+        //recv my candidate;onicecandidate
+        pc.onicecandidate = function (ev) {
+            console.log("ev.candidate=", ev.candidate);
+            console.log("ev.url=", ev.url);
+            var jsonStr = JSON.stringify({
+                "type": "send_candidate",
+                "data": ev.candidate
+            });
+            webSocket.send(jsonStr);
+        };
+
+        user_table_vue=new Vue({
+            el:"#user_table",
+            data:{
+                user:"",
+                userList:["abcd","edfgh"]
+            },
+            methods:{}
+        });
+
+    }
+
+    //recv offer;
+    function recvOtherOffer(offer) {
+        pc.setRemoteDescription(offer);
+
+        var answer = pc.createAnswer();
+        pc.setLocalDescription(answer);
+        //transmit answer;
+        var jsonStr = JSON.stringify({
+            "type": "recv_answer",
+            "data": answer
+        });
+        webSocket.send(jsonStr);
+    }
+
+    //recv answer
+    function recvOtherAnswer(answer) {
+        pc.setRemoteDescription(answer);
+    }
+
+
+    //recv other candidate
+    function recvOtherCandidate(candidate) {
+        pc.addIceCandidate(candidate);
+    }
+
+    //请求目前的用户列表:
+    function getUsers() {
+        webSocket.send(JSON.stringify({
+            "type":"get_users"
+        }));
+    }
+
+    //收到目前的用户列表;
+    function recvUserList(userList) {
+        for (var user in userList) {
+            console.log("user:", user);
+        }
+
+
+
+    }
+
 
 </script>
 

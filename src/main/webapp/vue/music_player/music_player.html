@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>音乐播放器</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<!--
+[
+https://www.bilibili.com/video/BV12J411m7MG?p=30
+
+4小时+5个拣选案例让你快速入门Vue.js
+在线学习：https://www.bilibili.com/video/BV12J411m7MG  求小主奖励三连
+完整视频：http://yun.itheima.com/course/609.html?2012zzp
+配套资料：https://pan.baidu.com/s/18EYUverPkdR7Gx3FQazxCQ (已保存)
+
+]
+音乐播放器:
+任务列表:
+1,歌曲搜索;
+2,歌曲播放;
+3,歌曲封面;
+4,歌曲评论;
+5,播放动画;
+6,mv播放;
+
+---
+歌曲搜索:
+curl 'https://autumnfish.cn/search?keywords=铁血丹心'
+查询歌曲url:
+curl 'https://autumnfish.cn/song/url?id=xxx'
+curl 'https://autumnfish.cn/song/url?id=4873540'
+歌曲详情,包含封面:
+curl 'https://autumnfish.cn/song/detail?ids=xxx'
+curl 'https://autumnfish.cn/song/detail?ids=4873540'
+
+歌曲评论:
+curl 'https://autumnfish.cn/comment/hot?type=0&id=xxx'
+curl 'https://autumnfish.cn/comment/hot?type=0&id=4873540'
+
+5,播放动画;
+监听音乐播放,停止;(v-on plat,pause)
+操纵类名;(v-bind)
+
+6,mv播放;
+id就是mvid(mvid==0表示没有mv);
+curl 'https://autumnfish.cn/mv/url?id=xxx'
+curl 'https://autumnfish.cn/mv/url?id=137'
+
+
+---
+curl 'https://autumnfish.cn/api/joke'
+
+-->
+<body>
+<div class="wrap">
+    <!--播放器主体区域-->
+    <div class="play_wrap" id="player">
+        <!--搜索区-->
+        <div class="search_bar">
+            <img src="images/player_title.png" alt=""/>
+            <input type="text" autocomplete="off" v-model="keywords" @keyup.enter="searchMusic">
+        </div>
+
+        <div class="center_con">
+            <!--歌曲列表-->
+            <div class="song_wrapper">
+                <ul class="song_list">
+                    <li v-for="(item,index) in musicList">
+                        <a href="javascript:;" @click="playMusic(item.id)"></a>
+                        <b>{{ item.name }}</b>
+                        <span v-if="item.mvid!=0" @click="playMV(item.mvid)"><i></i></span>
+                    </li>
+                </ul>
+            </div>
+            <!--歌曲信息容器-->
+            <div class="player_con" :class=" playing?'playing':'' ">
+                <img src="images/player_bar.png" class="play_bar"/>
+
+                <!--黑胶碟片-->
+                <img src="images/disc.png" class="disc autoRotate"/>
+                <!-- <img src="images/cover.png" class="cover autoRotate"/>-->
+                <img :src="musicCoverUrl" class="cover autoRotate"/>
+            </div>
+            <!--评论容器-->
+            <div class="comment_wrapper" v-show="commentList.length > 0">
+                <h5 class="title">热门留言</h5>
+                <div class="comment_list">
+                    <dl v-for="(item,index) in commentList" @click="personDetail(item.user.userId)">
+                        <dt><img :src="item.user.avatarUrl"></dt>
+                        <dd class="name">{{ item.user.nickname }}</dd>
+                        <dd class="detail">{{ item.content }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!--歌曲播放-->
+        <div class="audio_con">
+            <audio :src="musicUrl" controls="controls" @play="play" @pause="pause" autoplay="autoplay" loop="loop"
+                   class="myaudio"></audio>
+        </div>
+        <div class="video_con" style="display:none;" v-show="isShow">
+            <video :src="mvUrl" controls="controls"></video>
+            <div class="mask" @click="hide"></div>
+        </div>
+
+        <!--
+                <table border="1" v-show="musicList.length > 0"  >
+                    <tr>
+                        <th>编号</th><th>歌曲</th><th>歌手</th>
+                    </tr>
+                    <tr v-for="(item,index) in musicList">
+                        <td>{{ index }}</td><td>{{ item.name }}</td><td>{{ item.artists[0].name }}</td>
+                    </tr>
+                </table>
+        -->
+
+    </div>
+</div>
+
+
+<script src="../../libs/vue.js"></script>
+<script src="../../libs/axios.js"></script>
+<script>
+    var playerVue = new Vue({
+        el: "#player",
+        data: {
+            keywords: "",
+            musicList: [],
+            musicUrl: "",
+            musicCoverUrl: "",
+            //    歌曲评论;
+            commentList: [],
+            playing: false,
+            isShow: false,
+            mvUrl: "",
+
+        },
+        methods: {
+            searchMusic: function () {
+                var that = this;
+
+                axios.get("https://autumnfish.cn/search?keywords=" + this.keywords)
+                    .then(function (response) {
+                        console.log("response=", response);
+                        if (response.data.code == 200) {
+                            that.musicList = response.data.result.songs;
+                        }
+                        console.log("musicList=", that.musicList);
+                        console.log("musicList.length > 0=", (that.musicList.length > 0));
+
+                    }).catch(function (error) {
+                    console.log("error=", error);
+                });
+            },
+            playMusic: function (musicId) {
+                var that = this;
+                axios.get("https://autumnfish.cn/song/url?id=" + musicId)
+                    .then(function (response) {
+                        console.log("response=", response);
+                        if (response.data.code == 200) {
+                            that.musicUrl = response.data.data[0].url;
+                        }
+                        console.log("musicUrl=", that.musicUrl);
+                    }).catch(function (error) {
+                    console.log("error=", error);
+                });
+
+                axios.get("https://autumnfish.cn/song/detail?ids=" + musicId)
+                    .then(function (response) {
+                        if (response.data.code == 200) {
+                            that.musicCoverUrl = response.data.songs[0].al.picUrl;
+                        }
+                        console.log("musicCoverUrl=", that.musicCoverUrl);
+                    }).catch(function (error) {
+                    console.log("song_detail error!error=", error);
+                });
+
+                axios.get("https://autumnfish.cn/comment/hot?type=0&id=" + musicId)
+                    .then(function (response) {
+                        console.log("response=", response);
+                        if (response.data.code == 200) {
+                            that.commentList = response.data.hotComments;
+                        }
+                        console.log("that.commentList=", that.commentList);
+                    }).catch(function (error) {
+                    console.log("error=", error);
+                });
+
+
+            },
+            personDetail: function (userId) {
+                console.log("userId=", userId);
+            },
+            play: function () {
+                console.log("play!!");
+                this.playing = true;
+            },
+            pause: function () {
+                console.log("pause!!");
+                this.playing = false;
+            },
+            playMV: function (mvid) {
+                if (mvid == 0) {
+                    return;
+                }
+                var that = this;
+                axios.get("https://autumnfish.cn/mv/url?id=" + mvid)
+                    .then(function (response) {
+                        console.log("response=", response);
+                        if (response.data.code == 200) {
+                            that.mvUrl = response.data.data.url;
+                            that.isShow = true;
+                        }
+                        console.log("mvid=", mvid);
+                        console.log("that.mvUrl=", that.mvUrl);
+                        console.log("that.isShow=", that.isShow);
+
+                    }).catch(function (error) {
+                    console.log("error=", error);
+                });
+            },
+            hide: function () {
+                this.isShow = false;
+                this.mvUrl="";
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
+

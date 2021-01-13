@@ -35,6 +35,12 @@ public class HomeController {
         return new ApiResult(0, "success", "succ");
     }
 
+    @RequestMapping(value = "/detail.json")
+    public ApiResult detail(@RequestParam("selected") String selected) {
+        log.info("selected={};", selected);
+        return new ApiResult(0, "ok", selected);
+    }
+
 
     /**
      * [
@@ -61,8 +67,9 @@ public class HomeController {
     /**
      * [
      * curl -F file2=@从零开始搭建IM.pdf http://localhost:8085/cim_train/upload2.json
-     *
+     * <p>
      * ]
+     *
      * @param multipartFile
      * @return
      */

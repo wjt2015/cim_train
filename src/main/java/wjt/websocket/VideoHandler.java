@@ -1,13 +1,19 @@
 package wjt.websocket;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
+import wjt.service.CandidateService;
+import wjt.service.SdpService;
+import wjt.service.UserService;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,10 +34,14 @@ import java.util.concurrent.atomic.AtomicLong;
  * http://www.voidcn.com/article/p-ywdhlyyo-bqs.html
  * http://www.voidcn.com/article/p-moignzoa-rv.html
  * http://blog.csdn.net/leecho571/article/details/8146525
+ * ---
+ * 20210111,
+ * video_play.html
+ * <p>
+ * <p>
  * }
  */
 @Slf4j
-
 public class VideoHandler implements WebSocketHandler {
     private static final String JSON_TYPE = "type";
     private static final String OFFER_TYPE = "_offer";
@@ -54,6 +64,16 @@ public class VideoHandler implements WebSocketHandler {
         this.uidMapSession = uidMapSession;
     }
 
+
+    @Resource
+    private SdpService sdpService;
+
+    @Resource
+    private CandidateService candidateService;
+
+    @Resource
+    private UserService userService;
+
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 
@@ -69,55 +89,11 @@ public class VideoHandler implements WebSocketHandler {
 
     }
 
-/*    @Override
-    public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
-
-        log.info("id={};message={};", id.getAndIncrement(), message);
-
-        if (message instanceof TextMessage) {
-            TextMessage textMessage = (TextMessage) message;
-            log.info("textMessage={};payload={};", textMessage, textMessage.getPayload());
-            String payload = textMessage.getPayload();
-            JSONObject jsonObject = JSONObject.parseObject(payload);
-            //"event": "_ice_candidate"
-            String event = jsonObject.getString("event");
-            if ("_ice_candidate".equals(event)) {
-                uidMapCandidateJson.put(session.getId(), jsonObject.getJSONObject("data"));
-                log.info("uidMapCandidateJson={};", uidMapCandidateJson);
-            } else if ("_offer".equals(event)) {
-                uidMapOfferJson.put(session.getId(), jsonObject.getJSONObject("data"));
-                log.info("uidMapOfferJson={};", uidMapOfferJson);
-            }
-
-        }
-
-
-        */
-
-    /**
-     * 转发;
-     *//*
-     *//*
-        uidMapSession.forEach((uid,webSocketSession)->{
-            if(webSocketSession.isOpen()&&!webSocketSession.equals(session)){
-                try {
-                    webSocketSession.sendMessage(message);
-                } catch (IOException e) {
-                    log.error("send to userId={} error!",uid,e);
-                }
-            }
-        });
-*//*
-
-
-    }*/
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
         if (message instanceof TextMessage) {
             handleTextMessage(session, (TextMessage) (message));
         }
-
-
     }
 
     private void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
@@ -125,10 +101,65 @@ public class VideoHandler implements WebSocketHandler {
         log.info("sessionId={};payload={};", session.getId(), payload);
         JSONObject jsonObject = JSONObject.parseObject(payload);
         String type = jsonObject.getString(JSON_TYPE);
-        if(type.equals("_send_offer")){
+        String userId = session.getId();
+
+        if (type.equals("send_offer")) {
+            String offer = jsonObject.getString("data");
+            sdpService.saveOffer(session.getId(), offer);
+
+        } else if (type.equals("get_offer")) {
+            String targetUidStr = jsonObject.getString("data");
+            String offer = sdpService.getOffer(targetUidStr);
+
+            JSONObject recvOfferJson = new JSONObject();
+            recvOfferJson.put("type", "recv_offer");
+
+            JSONObject offerJson = new JSONObject();
+            offerJson.put("uid", targetUidStr);
+            offerJson.put("offer", offer);
+            recvOfferJson.put("data", offerJson);
+
+            session.sendMessage(new TextMessage(recvOfferJson.toJSONString()));
+
+        } else if (type.equals("send_answer")) {
+            JSONObject data = jsonObject.getJSONObject("data");
+            String targetUidStr = data.getString("target_uid");
+            String answer = data.getString("answer");
+
+            WebSocketSession webSocketSession = userService.getUserByUid(targetUidStr);
+            if (webSocketSession != null && webSocketSession.isOpen()) {
+
+                JSONObject answerJson = new JSONObject();
+                answerJson.put("uid", userId);
+                answerJson.put("answer", answer);
+
+                JSONObject recvAnswerJson = new JSONObject();
+                recvAnswerJson.put("type", "recv_answer");
+                recvAnswerJson.put("data", answerJson);
+                webSocketSession.sendMessage(new TextMessage(recvAnswerJson.toJSONString()));
+            }
+        } else if (type.equals("send_candidate")) {
+            String candidate = jsonObject.getString("data");
+            candidateService.saveCandidate(userId, candidate);
+        } else if (type.equals("recv_candidate")) {
+            String targetUidStr = jsonObject.getString("target_uid");
+            String candidate = candidateService.getCandidate(targetUidStr);
+            if (!(Strings.isNullOrEmpty(candidate) || session == null || !session.isOpen())) {
+
+                JSONObject candidateJson = new JSONObject();
+                candidateJson.put("uid", targetUidStr);
+                candidateJson.put("candidate", candidate);
+
+                JSONObject recvCandidateJson = new JSONObject();
+                recvCandidateJson.put("type", "recv_candidate");
+                recvCandidateJson.put("data", candidateJson);
+                session.sendMessage(new TextMessage(recvCandidateJson.toJSONString()));
+
+            }
 
         }
     }
+
 
 /*    private void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
         String payload = textMessage.getPayload();

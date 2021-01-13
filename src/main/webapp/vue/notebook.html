@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>记事本</title>
+</head>
+<!--
+[
+https://www.bilibili.com/video/BV12J411m7MG?p=18
+]
+一、新增:
+1,生成列表结构;
+2,获取用户输入;
+3,回车,新增数据;
+v-for,字符串数组;
+v-model;
+v-on,添加数据;
+-->
+<body>
+<div id="notebook">
+    <!--主体区域-->
+    <section id="todoapp">
+        <!--输入框-->
+        <header class="header">
+            <h1>小黑记事本</h1>
+            <input type="text" autofocus="autofocus" autocomplete="off" placeholder="请输入" class="new-todo"
+                   :value="input_text" @keyup.tab="hideList" @keydown.tab="showList"
+
+            />
+        </header>
+        <!--列表区域-->
+        <section class="main">
+            <!--下拉列表-->
+            <select v-show="showSelect" v-model="selected" >
+                <option v-for="(item,index) in list" >{{ item }}</option>
+            </select>
+        </section>
+        <h3>选择结果:</h3>
+        <p>{{ selected }}</p>
+
+        <hr/>
+        <button type="button" @click="submit">确定</button>
+
+        <!--统计和清空-->
+        <footer class="footer">
+
+        </footer>
+    </section>
+    <!--底部-->
+    <footer class="info">
+
+    </footer>
+</div>
+
+
+<script src="../libs/vue.js"></script>
+<script src="../libs/axios.js"></script>
+<script>
+    var noteBookVue=new Vue({
+        el:"#todoapp",
+        data:{
+            list:["weak","need","arch","code","test"],
+            input_text:"abcd",
+            showSelect:false,
+            selected:""
+        },
+        methods:{
+            showList:function () {
+                console.log("showList!");
+                this.showSelect=true;
+            },
+            hideList:function () {
+                console.log("hideList!");
+                this.showSelect=false;
+            },
+            selectOne:function(event){
+                console.log("selectOne!event=",event);
+                this.input_text=event.target.innerText;
+            },
+            submit:function () {
+                console.log("submit!");
+                axios.get("http://localhost:8085/cim_train/detail.json?selected="+this.selected)
+                    .then(function (response) {
+                        console.log("response=",response);
+                    }).catch(function (error) {
+                        console.log("error=",error);
+                });
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
+
