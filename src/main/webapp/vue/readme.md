@@ -21,6 +21,8 @@ hbuilder,
 https://cn.vuejs.org/v2/guide/instance.html    
 https://www.dcloud.io/?hmsr=vuejsorg&hmpl=&hmcu=&hmkw=&hmci=  
 
+uni-app+vue,  
+https://learning.dcloud.io/#/?vid=12  
 
 
 }

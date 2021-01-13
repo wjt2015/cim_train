@@ -1,9 +1,13 @@
 # cim_train
+{
+
 学习netty。参考https://github.com/crossoverJie/cim
 
 
 cim_train/src/main/webapp/srs_players,音视频推拉流;
 
+
+}
 
 {
 
@@ -54,6 +58,9 @@ https://www.jb51.net/article/147097.htm
 {
 富文本编辑器:
 ueditor,umeditor;
+http://fex.baidu.com/ueditor/
+https://github.com/fex-team/ueditor.git
+https://github.com/fex-team/ueditor
 
 }
 
