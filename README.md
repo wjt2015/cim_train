@@ -15,6 +15,9 @@ http://localhost:8081/cim_train/srs_players/rtc_player.html
 
 http://localhost:8081/cim_train/srs_players/rtc_publisher.html
 
+http://localhost:8085/cim_train/checkCodePic.json
+
+
 }
 {
 20201217,

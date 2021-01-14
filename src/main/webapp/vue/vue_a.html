@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>vue练习</title>
+    <script src="../libs/vue.js"></script>
+    <script src="../libs/axios.js"></script>
 </head>
 <body>
 
@@ -47,11 +49,13 @@
 
         <table border="1">
             <tr>
-                <th>编号</th><th>音乐</th>
+                <th>编号</th>
+                <th>音乐</th>
             </tr>
 
             <tr v-for="(item,index) in musicList">
-                <td>{{ index }}</td><td @click="musicDetail($event)">{{ item }}</td>
+                <td>{{ index }}</td>
+                <td @click="musicDetail($event)">{{ item }}</td>
             </tr>
         </table>
         <hr/>
@@ -68,8 +72,17 @@
         <hr/>
 
         <!--二维码-->
-        <img src="http://qrcode.leipi.org.cn/js.html?qw=150&qc=&ql=undefined&lw=NaN&lh=NaN&bor=undefined&op=img" >
+        <div>
+            <h2>二维码</h2>
+            <img src="http://qrcode.leipi.org.cn/js.html?qw=150&qc=&ql=undefined&lw=NaN&lh=NaN&bor=undefined&op=img">
+        </div>
 
+        <div>
+            <h2>验证码</h2>
+            <br/>
+            <!--验证码图片;点击一下即可更新二维码;-->
+            <img v-on:click="updateCheckCodePic" v-bind:src="checkCodePicSrc" style="width: 150px;height: 120px"/>
+        </div>
     </div>
     <hr/>
     <hr/>
@@ -91,9 +104,11 @@
             imgSrcArr: ["../res/pic/1.jpg", "../res/pic/2.jpg", "../res/pic/3.jpg", "../res/pic/4.jpg", "../res/pic/5.jpg"],
             prevShow: true,
             nextShow: true,
-            musicList:["铁血丹心","千古绝唱","滚滚长江东逝水","红枣树"],
-            input_msg:"",
-            text_msg:"",
+            musicList: ["铁血丹心", "千古绝唱", "滚滚长江东逝水", "红枣树"],
+            input_msg: "",
+            text_msg: "",
+            checkCodePicSrc: "http://localhost:8085/cim_train/checkCodePic.json?id=0",
+            checkCodePicSrcId: 1,
 
         },
         methods: {
@@ -114,21 +129,35 @@
                 }
             },
             next: function () {
-                if(this.imgIndex<(this.imgSrcArr.length-1)){
+                if (this.imgIndex < (this.imgSrcArr.length - 1)) {
                     this.imgIndex++;
                 }
                 // this.imgIndex = (this.imgIndex + 1) % this.imgSrcArr.length;
             },
-            addMusic:function () {
+            addMusic: function () {
                 this.musicList.push("思故乡");
             },
             //v-on传参数;
-            musicDetail:function (event) {
-                console.log("musicDetail!event=",event,event.target.innerText);
+            musicDetail: function (event) {
+                console.log("musicDetail!event=", event, event.target.innerText);
             },
-            updateMsg:function () {
-                this.input_msg=this.input_msg+";updated!";
-                console.log("input_msg=",this.input_msg);
+            updateMsg: function () {
+                this.input_msg = this.input_msg + ";updated!";
+                console.log("input_msg=", this.input_msg);
+            },
+            updateCheckCodePic: function () {
+                /*                axios.get("http://localhost:8085/cim_train/checkCodePic.json")
+                                    .then(function(response){
+                                        console.log("updateCheckCodePic!response=",response);
+                                    })
+                                    .catch(function (error) {
+                                        console.log("updateCheckCodePic!error=",error);
+                                    });*/
+
+                this.checkCodePicSrcId++;
+                this.checkCodePicSrc = "http://localhost:8085/cim_train/checkCodePic.json?id=" + this.checkCodePicSrcId;
+                console.log("updateCheckCodePic finish!this.checkCodePicSrc=", this.checkCodePicSrc);
+
             }
         }
     });
