@@ -17,6 +17,13 @@ http://localhost:8081/cim_train/srs_players/rtc_publisher.html
 
 http://localhost:8085/cim_train/checkCodePic.json
 
+curl -F profile=@portrait.jpg https://example.com/upload.cgi
+
+
+curl -F file2=@从零开始搭建瓜子IM系_滴滴技术沙龙第7期.pdf http://localhost:8085/cim_train/upload2.json 
+
+http://localhost:8085/websocket/video_websocket.html
+
 
 }
 {
