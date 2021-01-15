@@ -1,6 +1,9 @@
 package wjt.controller;
 
+import io.netty.handler.codec.http.HttpHeaderNames;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+import org.springframework.http.HttpHeaders;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,9 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import wjt.model.ApiResult;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
+/**
+ * 常用功能测试;
+ */
 @Slf4j
 @RestController
 public class HomeController {
@@ -81,6 +89,35 @@ public class HomeController {
         long size = multipartFile.getSize();
         log.info("name={};originalFilename={};contentType={};size={};", name, originalFilename, contentType, size);
         return new ApiResult(0, "success", originalFilename);
+    }
+
+    /**
+     * 下载;
+     * [
+     *
+     * http://localhost:8085/cim_train/download.json?fileName=123
+     * ]
+     *
+     * @param fileName
+     * @param httpServletResponse
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = {"/download.json"})
+    public ApiResult download(@RequestParam("fileName") String fileName, HttpServletResponse httpServletResponse) throws IOException {
+
+        //docs/file_dir/从零开始搭建瓜子IM系_滴滴技术沙龙第7期.pdf
+        //String downLoadFileName = "docs/db.txt";
+        String downLoadFileName = "docs/file_dir/从零开始搭建瓜子IM系_滴滴技术沙龙第7期.pdf";
+//
+        String contentDisposition = new StringBuilder().append("form-data; name=\"").append(downLoadFileName).append("\"")
+                .append("; filename=").append("\"").append(downLoadFileName).append("\"")
+                .toString();
+        //下载,浏览器不打开;
+        httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION,contentDisposition);
+        FileUtils.copyFile(new File(downLoadFileName), httpServletResponse.getOutputStream());
+        log.info("fileName={};downLoadFileName={};copy finish!", fileName, downLoadFileName);
+        return new ApiResult(0, "ok", downLoadFileName);
     }
 
 
