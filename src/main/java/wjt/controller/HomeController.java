@@ -51,6 +51,7 @@ public class HomeController {
 
 
     /**
+     * 文件上传;
      * [
      * curl -F file=@abc.png http://localhost:8085/cim_train/upload.json
      * <p>
