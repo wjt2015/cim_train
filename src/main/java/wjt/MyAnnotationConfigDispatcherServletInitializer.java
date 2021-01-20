@@ -6,7 +6,6 @@ import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 import wjt.config.BizConfig;
 import wjt.config.WebConfig;
-import wjt.filter.CorsFilter;
 import wjt.websocket.MyWebSocketConfigurer;
 
 import javax.servlet.DispatcherType;
