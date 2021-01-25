@@ -79,6 +79,8 @@ v-model:获取和设置表单元素的值(双向数据绑定);
 绑定的数据<-->表单元素值;
 v-model="vue实例内data区域内的变量名"
 
+计算属性和侦听器:
+https://cn.vuejs.org/v2/guide/computed.html 
 
 
 
